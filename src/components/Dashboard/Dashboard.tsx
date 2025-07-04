@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { RefreshCw, Activity } from 'lucide-react';
-import DatePicker from './DatePicker';
-import JumpServerCard from './JumpServerCard';
-import { getJumpServers } from '@/services/apiService';
+import DatePicker from '../DatePicker/DatePicker';
+import JumpServerCard from '../JumpServerCard/JumpServerCard';
+import { getJumpServers } from '../../providers/apiService';
 
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(

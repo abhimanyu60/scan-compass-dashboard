@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, Server, RefreshCw } from 'lucide-react';
-import { getScansByJumpServer } from '@/services/apiService';
-import ScanItem from './ScanItem';
+import { getScansByJumpServer } from '../../providers/apiService';
+import ScanItem from '../ScanItem/ScanItem';
 
 interface JumpServerCardProps {
   jumpServerName: string;
