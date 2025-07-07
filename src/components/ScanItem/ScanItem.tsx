@@ -38,6 +38,19 @@ const ScanItem: React.FC<ScanItemProps> = ({ hostname, status }) => {
     }
   };
 
+  // If hostname is empty, render just the status badge (for flat list view)
+  if (!hostname) {
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(status)}`}
+      >
+        {getStatusIcon(status)}
+        <span className="ml-1">{status}</span>
+      </span>
+    );
+  }
+
+  // Original layout for jump server expandable view
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
       <div className="flex items-center space-x-3">

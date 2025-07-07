@@ -1,36 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { RefreshCw, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import DatePicker from '../DatePicker/DatePicker';
-import JumpServerCard from '../JumpServerCard/JumpServerCard';
-import { getJumpServers } from '../../providers/apiService';
+import ServerListView from '../ServerListView/ServerListView';
+import JumpServerView from '../JumpServerView/JumpServerView';
 
 const Dashboard: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(
-    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Default to 7 days ago
-  );
-  const [jumpServers, setJumpServers] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const fetchJumpServers = async (date: Date) => {
-    setIsLoading(true);
-    try {
-      const dateString = format(date, 'yyyy-MM-dd');
-      const servers = await getJumpServers(dateString);
-      setJumpServers(servers);
-    } catch (error) {
-      console.error('Error fetching jump servers:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (selectedDate) {
-      fetchJumpServers(selectedDate);
-    }
-  }, [selectedDate]);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Default to today
+  const [activeTab, setActiveTab] = useState('servers');
 
   const handleDateChange = (date: Date | undefined) => {
     if (date) {
@@ -58,43 +37,20 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {isLoading ? (
-          <div className="text-center py-12">
-            <RefreshCw className="h-8 w-8 text-gray-400 animate-spin mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">Loading jump servers...</p>
-          </div>
-        ) : jumpServers.length > 0 ? (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Jump Servers ({jumpServers.length})
-              </h2>
-              <p className="text-gray-500 text-sm">
-                Click on a server to view scan details
-              </p>
-            </div>
-            
-            <div className="grid gap-6">
-              {jumpServers.map((server, index) => (
-                <JumpServerCard
-                  key={index}
-                  jumpServerName={server}
-                  startDate={format(selectedDate, 'yyyy-MM-dd')}
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No jump servers found
-            </h3>
-            <p className="text-gray-500">
-              No scan activity detected for the selected date range.
-            </p>
-          </div>
-        )}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="servers">All Target Servers</TabsTrigger>
+            <TabsTrigger value="jumpservers">By Jump Server</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="servers" className="space-y-6">
+            <ServerListView selectedDate={selectedDate} />
+          </TabsContent>
+          
+          <TabsContent value="jumpservers" className="space-y-6">
+            <JumpServerView selectedDate={selectedDate} />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

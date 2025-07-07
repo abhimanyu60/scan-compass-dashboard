@@ -59,3 +59,28 @@ export const getScansByJumpServer = async (
   console.log(`Fetching scans for ${jumpServerName} since ${date}`);
   return MOCK_SCAN_DATA[jumpServerName] || [];
 };
+
+export const getAllTargetServers = async (date: string): Promise<Array<{
+  hostname: string;
+  status: string;
+  jumpServer: string;
+}>> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 400));
+  
+  console.log(`Fetching all target servers for date: ${date}`);
+  
+  const allServers: Array<{hostname: string, status: string, jumpServer: string}> = [];
+  
+  Object.entries(MOCK_SCAN_DATA).forEach(([jumpServer, servers]) => {
+    servers.forEach(server => {
+      allServers.push({
+        hostname: server.hostname,
+        status: server.status,
+        jumpServer: jumpServer
+      });
+    });
+  });
+  
+  return allServers;
+};
